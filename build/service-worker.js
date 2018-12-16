@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/3.6.3/workbox-sw.js");
 
 importScripts(
-  "https://www.isempty.site/bandou/precache-manifest.42a5171ce70476382dd4323d31ad164f.js"
+  "https://www.isempty.site/bandou/precache-manifest.ee499ecb54babecfdbaac77c26a32228.js"
 );
 
 workbox.clientsClaim();

@@ -41,7 +41,7 @@ export default class Login extends React.Component {
   }
   onLoginClick = () => {
     if (this.state.isLogin) {
-      this.context.router.history.replace('/home');
+      this.context.router.history.replace('/bandou/home');
 
       // request({
       //   url: 'index/login',

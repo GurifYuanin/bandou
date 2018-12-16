@@ -1,13 +1,13 @@
 {
   "main.css": "https://www.isempty.site/bandou/static/css/main.53de9c8e.chunk.css",
-  "main.js": "https://www.isempty.site/bandou/static/js/main.578984b4.chunk.js",
-  "main.js.map": "https://www.isempty.site/bandou/static/js/main.578984b4.chunk.js.map",
+  "main.js": "https://www.isempty.site/bandou/static/js/main.fd0f08c5.chunk.js",
+  "main.js.map": "https://www.isempty.site/bandou/static/js/main.fd0f08c5.chunk.js.map",
   "static/js/1.3277b624.chunk.js": "https://www.isempty.site/bandou/static/js/1.3277b624.chunk.js",
   "static/js/1.3277b624.chunk.js.map": "https://www.isempty.site/bandou/static/js/1.3277b624.chunk.js.map",
   "runtime~main.js": "https://www.isempty.site/bandou/static/js/runtime~main.9273b756.js",
   "runtime~main.js.map": "https://www.isempty.site/bandou/static/js/runtime~main.9273b756.js.map",
   "static/css/main.53de9c8e.chunk.css.map": "https://www.isempty.site/bandou/static/css/main.53de9c8e.chunk.css.map",
   "index.html": "https://www.isempty.site/bandou/index.html",
-  "precache-manifest.42a5171ce70476382dd4323d31ad164f.js": "https://www.isempty.site/bandou/precache-manifest.42a5171ce70476382dd4323d31ad164f.js",
+  "precache-manifest.ee499ecb54babecfdbaac77c26a32228.js": "https://www.isempty.site/bandou/precache-manifest.ee499ecb54babecfdbaac77c26a32228.js",
   "service-worker.js": "https://www.isempty.site/bandou/service-worker.js"
 }
