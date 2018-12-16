@@ -17,7 +17,7 @@ interface Props {
 }
 
 class Header extends React.Component {
-  path: string = '/home/';
+  path: string = '/bandou/home/';
   history = createHashHistory()
   onLogoutClick = () => {
 
@@ -40,7 +40,7 @@ class Header extends React.Component {
             欢迎来到瓣豆
           </Typography>
           <Button color="inherit" onClick={this.onLogoutClick}>
-            <Link to="/" className="plain-text">登出</Link>
+            <Link to="/bandou/" className="plain-text">登出</Link>
           </Button>
         </Toolbar>
         <Card
@@ -49,8 +49,8 @@ class Header extends React.Component {
             textAlign: 'center'
           }}
         >
-          <Button size="large"><Link to="/home/" className="plain-text nav-button">首页</Link></Button>
-          <Button size="large"><Link to="/home/user" className="plain-text nav-button">个人中心</Link></Button>
+          <Button size="large"><Link to="/bandou/home/" className="plain-text nav-button">首页</Link></Button>
+          <Button size="large"><Link to="/bandou/home/user" className="plain-text nav-button">个人中心</Link></Button>
         </Card>
       </AppBar>
     );
