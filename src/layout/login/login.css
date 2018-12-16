@@ -1,0 +1,23 @@
+.login-container {
+  display: block;
+  width: 100vw;
+  height: 100vh;
+}
+
+.login-card {
+  padding: 24px;
+  padding-bottom: 0;
+}
+
+.login-header {
+  padding: 12px 0;
+  text-align: center;
+}
+
+.login-actions {
+  margin-top: 10px;
+}
+.login-actions button {
+  width: 100%;
+  margin: auto;
+}
