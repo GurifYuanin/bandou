@@ -55,7 +55,7 @@ export default class Item extends React.Component<Props> {
             <Fab className="plain-shadow-fab" size="small" style={{
               width: '88px'
             }} variant="extended">
-              <Link to={`/home/user/${user.username}`} className="plain-text">查看详情</Link>
+              <Link to={`/bandou/home/user/${user.username}`} className="plain-text">查看详情</Link>
             </Fab>
           </div>
         </div>
