@@ -9,25 +9,30 @@ import InputLabel from '@material-ui/core/InputLabel';
 import LockIcon from '@material-ui/icons/LockOutlined';
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import request from '../../util/request';
+import Modal from '@material-ui/core/Modal';
 import { Md5 } from 'ts-md5/dist/md5';
 import './login.css';
 import PropTypes from 'prop-types';
 
-interface Props {
+interface State {
   username: string;
   password: string;
   passwordAgain: string;
   isLogin: boolean;
+  isModal: boolean;
+  modalMessage: string;
 }
 export default class Login extends React.Component {
   static contextTypes = {
     router: PropTypes.object
   };
-  state: Props = {
+  state: State = {
     username: '',
     password: '',
     passwordAgain: '',
-    isLogin: true
+    isLogin: true,
+    isModal: false,
+    modalMessage: ''
   };
   onUsernameChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     this.setState({
@@ -39,18 +44,32 @@ export default class Login extends React.Component {
       password: e.target.value
     });
   }
+  onPasswordAgainChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    this.setState({
+      passwordAgain: e.target.value
+    });
+  }
   onLoginClick = () => {
     if (this.state.isLogin) {
-      this.context.router.history.replace('/bandou/home');
-
-      // request({
-      //   url: 'index/login',
-      //   method: 'post',
-      //   data: {
-      //     username: this.state.username,
-      //     password: Md5.hashStr(this.state.password)
-      //   }
-      // });
+      request({
+        url: 'User/login',
+        method: 'post',
+        data: {
+          username: this.state.username,
+          password: Md5.hashStr(this.state.password)
+        }
+      }).then(response => {
+        const data = response.data;
+        if (data.status) {
+          localStorage.setItem('username', this.state.username);
+          this.context.router.history.replace('/bandou/home');
+        } else {
+          this.setState({
+            modalMessage: data.message,
+            isModal: true
+          });
+        }
+      });
     } else {
       this.setState({
         isLogin: true
@@ -63,14 +82,33 @@ export default class Login extends React.Component {
         isLogin: false
       });
     } else {
+      if (this.state.password !== this.state.passwordAgain) {
+        this.setState({
+          isModal: true,
+          modalMessage: '密码不一致'
+        });
+        return;
+      }
       request({
-        url: 'index/register',
+        url: 'User/register',
         method: 'post',
         data: {
           username: this.state.username,
           password: Md5.hashStr(this.state.password)
         }
-      });
+      }).then(response => {
+        const data = response.data;
+        localStorage.setItem('username', this.state.username);
+        this.setState({
+          modalMessage: data.message,
+          isModal: true
+        });
+        if (data.status) {
+          setTimeout(() => {
+            this.context.router.history.replace('/bandou/home');
+          }, 2000);
+        }
+      })
     }
   }
   render() {
@@ -105,6 +143,7 @@ export default class Login extends React.Component {
                 id="login-password-again"
                 type="password"
                 value={this.state.passwordAgain}
+                onChange={this.onPasswordAgainChange}
               />
             </FormControl>}
             <CardActions className="login-actions">
@@ -116,6 +155,10 @@ export default class Login extends React.Component {
             </CardActions>
           </CardContent>
         </Card>
+
+        <Modal open={this.state.isModal} onClose={() => this.setState({ isModal: false })}>
+          <div className="common-modal absolute-vertical-horizontal-center">{this.state.modalMessage}</div>
+        </Modal>
       </article>
     );
   }

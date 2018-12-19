@@ -12,3 +12,8 @@
 .plain-text :visited {
   color: inherit;
 }
+
+.common-modal {
+  background-color: white;
+  padding: 25px;
+}

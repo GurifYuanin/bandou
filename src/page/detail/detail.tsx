@@ -3,11 +3,12 @@ import Card from '@material-ui/core/Card';
 import CardHeader from '@material-ui/core/CardHeader';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
-import CardActionArea from '@material-ui/core/CardActionArea';
 import Avatar from '@material-ui/core/Avatar';
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
+import request from '../../util/request';
+import PropTypes from 'prop-types';
 
 interface User {
   username: string;
@@ -19,30 +20,118 @@ interface User {
 }
 interface State {
   user: User;
+  commentList: Comment[];
   comment: Comment;
-
+  username: string;
+}
+interface Props {
+  match: {
+    params: {
+      username: string
+    }
+  }
 }
 interface Comment {
+  operationer: string;
   content: string;
 }
 
-export default class Detail extends React.Component {
+interface ServerComment {
+  operationer: string;
+  be_operationer: string;
+  content: string;
+  create_time: string;
+}
+
+export default class Detail extends React.Component<Props, State> {
+  static contextTypes = {
+    router: PropTypes.object
+  };
   state: State = {
+    username: localStorage.getItem('username') || '',
+    commentList: [],
     user: {
-      username: '二狗子',
+      username: this.props.match.params.username,
       up: 0,
       down: 0,
       isMale: true,
       comments: [],
-      detail: '喜欢狗狗'
+      detail: ''
     },
     comment: {
+      operationer: localStorage.getItem('username') || '',
       content: ''
     }
   }
   componentWillMount() {
-
+    if (!this.state.username) {
+      this.context.router.history.replace('/bandou/');
+      return;
+    }
+    request({
+      method: 'post',
+      url: 'User/getUserInfo',
+      data: {
+        username: this.state.user.username
+      }
+    }).then(response => {
+      const data = response.data;
+      if (data.status) {
+        this.setState((preState: State) => {
+          preState.user.up = data.info.up;
+          preState.user.down = data.info.down;
+          preState.user.detail = data.info.detail || '暂无';
+          preState.user.isMale = data.info.is_male === 1;
+          return preState;
+        });
+      }
+    });
+    this.getAllComment();
   }
+
+  getAllComment = () => {
+    request({
+      method: 'post',
+      url: 'Comment/getAllComment',
+      data: {
+        be_operationer: this.state.user.username
+      }
+    }).then(response => {
+      const data = response.data;
+      if (data.status) {
+        this.setState({
+          commentList: data.list.map((el: ServerComment) => ({
+            operationer: el.operationer,
+            content: el.content
+          }))
+        });
+      }
+    });
+  }
+
+  addCommentClickHandler = () => {
+    if (this.state.comment.content) {
+      request({
+        method: 'post',
+        url: 'Comment/addComment',
+        data: {
+          operationer: this.state.username,
+          be_operationer: this.state.user.username,
+          content: this.state.comment.content
+        }
+      }).then(response => {
+        const data = response.data;
+        if (data.status) {
+          this.getAllComment();
+          this.setState((preState: State) => {
+            preState.comment.content = ''
+            return preState;
+          });
+        }
+      });
+    }
+  }
+
   render() {
     const user: User = this.state.user;
     return (
@@ -88,8 +177,13 @@ export default class Detail extends React.Component {
         <Card style={{ width: '100%' }} >
           <CardHeader title="评论列表"></CardHeader>
           <CardContent>
-            {user.comments.map((el: string) =>
-              <div>{el}</div>
+            {this.state.commentList.length === 0 && <div>暂无评论</div>}
+            {this.state.commentList.map((el: Comment, index: number) =>
+              <div key={index} style={{ marginBottom: '10px' }}>
+                {el.operationer}
+                评论说：
+                {el.content}
+              </div>
             )}
           </CardContent>
 
@@ -106,9 +200,13 @@ export default class Detail extends React.Component {
               InputLabelProps={{
                 shrink: true,
               }}
-              onChange={e => this.setState({
-                comment: { content: e.target.value }
-              })}
+              onChange={e => {
+                const value = e.target.value;
+                this.setState((preState: State) => {
+                  preState.comment.content = value;
+                  return preState;
+                });
+              }}
             />
           </FormControl>
           <CardActions style={{
@@ -116,7 +214,7 @@ export default class Detail extends React.Component {
             textAlign: 'center',
             justifyContent: 'center'
           }}>
-            <Button color="primary" variant="contained">发表评论</Button>
+            <Button color="primary" variant="contained" onClick={this.addCommentClickHandler}>发表评论</Button>
           </CardActions>
         </Card>
       </div>
