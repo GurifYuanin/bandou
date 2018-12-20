@@ -3,6 +3,7 @@ import Item from '../../component/item/item';
 import TablePagination from '@material-ui/core/TablePagination';
 import request from '../../util/request';
 import PropTypes from 'prop-types';
+import './home.css';
 
 
 export interface User {
@@ -33,7 +34,7 @@ interface ServerUser {
   detail: string | null;
 }
 
-export default class Login extends React.Component {
+export default class Login extends React.Component<{}, State> {
   static contextTypes = {
     router: PropTypes.object
   };

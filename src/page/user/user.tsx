@@ -16,6 +16,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import ThreeSixtyIcon from '@material-ui/icons/ThreeSixty';
 import { Comment, ServerComment } from '../detail/detail';
+import './user.css';
 
 interface State {
   username: string;
@@ -103,7 +104,8 @@ export default class Login extends React.Component {
         this.setState({
           commentList: data.list.map((el: ServerComment) => ({
             operationer: el.operationer,
-            content: el.content
+            content: el.content,
+            create_time: el.create_time
           }))
         });
       }
@@ -187,7 +189,11 @@ export default class Login extends React.Component {
             </div>
             <h4 style={{ textAlign: 'center' }}>对我的评论</h4>
             {this.state.commentList.length === 0 && <div>暂无评论</div>}
-            {this.state.commentList.map((el: Comment) => <div>{el.operationer}说：{el.content}</div>)}
+            {this.state.commentList.map((el: Comment) =>
+              (<div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <div>{el.operationer}说：{el.content}</div>
+                <div style={{ fontSize: '12px', color: 'gray' }}>{el.create_time}</div>
+              </div>))}
           </CardContent>
         </Card>
         <Modal open={this.state.isModal} onClose={() => this.setState({ isModal: false })}>

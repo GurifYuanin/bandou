@@ -10,6 +10,7 @@ import Button from '@material-ui/core/Button';
 import request from '../../util/request';
 import PropTypes from 'prop-types';
 import Modal from '@material-ui/core/Modal';
+import Paper from '@material-ui/core/Paper';
 import './detail.css';
 
 interface User {
@@ -38,6 +39,7 @@ interface Props {
 export interface Comment {
   operationer: string;
   content: string;
+  create_time: string;
 }
 
 export interface ServerComment {
@@ -64,7 +66,8 @@ export default class Detail extends React.Component<Props, State> {
     },
     comment: {
       operationer: localStorage.getItem('username') || '',
-      content: ''
+      content: '',
+      create_time: new Date().toString()
     },
     isModal: false,
     modalMessage: ''
@@ -108,7 +111,8 @@ export default class Detail extends React.Component<Props, State> {
         this.setState({
           commentList: data.list.map((el: ServerComment) => ({
             operationer: el.operationer,
-            content: el.content
+            content: el.content,
+            create_time: el.create_time
           }))
         });
       }
@@ -193,13 +197,11 @@ export default class Detail extends React.Component<Props, State> {
           <CardHeader title="评论列表"></CardHeader>
           <CardContent>
             {this.state.commentList.length === 0 && <div>暂无评论</div>}
-            {this.state.commentList.map((el: Comment, index: number) =>
-              <div key={index} style={{ marginBottom: '10px' }}>
-                {el.operationer}
-                评论说：
-                {el.content}
-              </div>
-            )}
+            {this.state.commentList.map((el: Comment) =>
+              (<Paper style={{ display: 'flex', justifyContent: 'space-between', margin: '5px auto', padding: '5px' }}>
+                <div>{el.operationer}说：{el.content}</div>
+                <div style={{ fontSize: '12px', color: 'gray' }}>{el.create_time}</div>
+              </Paper>))}
           </CardContent>
 
           <FormControl style={{
