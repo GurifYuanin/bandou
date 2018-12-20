@@ -40,44 +40,7 @@ export default class Login extends React.Component<{}, State> {
   };
   state: State = {
     username: localStorage.getItem('username'),
-    items: [
-      // {
-      //   username: '二狗子',
-      //   detail: '喜欢狗狗',
-      //   up: 0,
-      //   down: 0,
-      //   isUped: false,
-      //   isDowned: false,
-      //   isMale: true
-      // },
-      // {
-      //   username: '三狗子',
-      //   detail: '喜欢狗狗',
-      //   up: 0,
-      //   down: 0,
-      //   isUped: false,
-      //   isDowned: false,
-      //   isMale: true
-      // },
-      // {
-      //   username: '四狗子',
-      //   detail: '喜欢狗狗',
-      //   up: 0,
-      //   down: 0,
-      //   isUped: false,
-      //   isDowned: false,
-      //   isMale: true
-      // },
-      // {
-      //   username: '五狗子',
-      //   detail: '喜欢狗狗',
-      //   up: 0,
-      //   down: 0,
-      //   isUped: false,
-      //   isDowned: false,
-      //   isMale: true
-      // },
-    ],
+    items: [],
     rowsPerPage: 10,
     currentPage: 1
   }

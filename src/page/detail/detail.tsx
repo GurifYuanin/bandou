@@ -8,9 +8,10 @@ import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import request from '../../util/request';
-import PropTypes from 'prop-types';
 import Modal from '@material-ui/core/Modal';
 import Paper from '@material-ui/core/Paper';
+import { withRouter } from 'react-router';
+import { RouteComponentProps } from 'react-router-dom';
 import './detail.css';
 
 interface User {
@@ -49,10 +50,7 @@ export interface ServerComment {
   create_time: string;
 }
 
-export default class Detail extends React.Component<Props, State> {
-  static contextTypes = {
-    router: PropTypes.object
-  };
+class Detail extends React.Component<RouteComponentProps<{}> & Props, State> {
   state: State = {
     username: localStorage.getItem('username') || '',
     commentList: [],
@@ -74,7 +72,11 @@ export default class Detail extends React.Component<Props, State> {
   }
   componentWillMount() {
     if (!this.state.username) {
-      this.context.router.history.replace('/bandou/');
+      this.setState({
+        isModal: true,
+        modalMessage: '请登录'
+      });
+      setTimeout(() => this.props.history.push('/bandou/'), 1000);
       return;
     }
     request({
@@ -151,14 +153,7 @@ export default class Detail extends React.Component<Props, State> {
   render() {
     const user: User = this.state.user;
     return (
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        overflow: 'auto'
-      }}>
+      <div className="user-detail-container">
         <Card style={{
           width: '100%',
           display: 'flex',
@@ -213,6 +208,7 @@ export default class Detail extends React.Component<Props, State> {
               placeholder="输入评论内容"
               value={this.state.comment.content}
               fullWidth
+              required
               variant="filled"
               InputLabelProps={{
                 shrink: true,
@@ -241,3 +237,5 @@ export default class Detail extends React.Component<Props, State> {
     );
   }
 }
+
+export default withRouter(Detail);

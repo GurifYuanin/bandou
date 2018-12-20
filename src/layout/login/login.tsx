@@ -131,13 +131,14 @@ export default class Login extends React.Component {
       <article className="login-container">
         <Card className="absolute-vertical-horizontal-center login-card">
           <div className="login-header">
-            <LockIcon />
+            <LockIcon style={{ verticalAlign: 'middle' }} />
             欢迎{this.state.isLogin ? '登录' : '注册'}
           </div>
           <CardContent>
             <FormControl fullWidth>
               <InputLabel htmlFor="login-username">用户名</InputLabel>
               <Input
+                required
                 id="login-username"
                 value={this.state.username}
                 onChange={this.onUsernameChange}
@@ -146,6 +147,7 @@ export default class Login extends React.Component {
             <FormControl fullWidth>
               <InputLabel htmlFor="login-password">密码</InputLabel>
               <Input
+                required
                 id="login-password"
                 type="password"
                 value={this.state.password}
@@ -157,6 +159,7 @@ export default class Login extends React.Component {
               <Input
                 id="login-password-again"
                 type="password"
+                error={this.state.password !== this.state.passwordAgain}
                 value={this.state.passwordAgain}
                 onChange={this.onPasswordAgainChange}
               />
