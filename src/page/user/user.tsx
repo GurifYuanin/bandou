@@ -11,6 +11,11 @@ import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
 import request from '../../util/request';
 import PropTypes from 'prop-types';
 import Modal from '@material-ui/core/Modal';
+import Tooltip from '@material-ui/core/Tooltip';
+import Card from '@material-ui/core/Card';
+import CardContent from '@material-ui/core/CardContent';
+import ThreeSixtyIcon from '@material-ui/icons/ThreeSixty';
+import { Comment, ServerComment } from '../detail/detail';
 
 interface State {
   username: string;
@@ -20,6 +25,7 @@ interface State {
   down: number;
   isModal: boolean;
   modalMessage: string;
+  commentList: Comment[];
 }
 export default class Login extends React.Component {
   static contextTypes = {
@@ -32,7 +38,8 @@ export default class Login extends React.Component {
     up: 0,
     down: 0,
     isModal: false,
-    modalMessage: ''
+    modalMessage: '',
+    commentList: []
   }
 
   componentWillMount() {
@@ -62,7 +69,8 @@ export default class Login extends React.Component {
           modalMessage: data.message
         });
       }
-    })
+    });
+    this.getAllComment();
   }
   updateUserInfo = () => {
     request({
@@ -81,43 +89,67 @@ export default class Login extends React.Component {
       });
     });
   }
+
+  getAllComment = () => {
+    request({
+      method: 'post',
+      url: 'Comment/getAllComment',
+      data: {
+        be_operationer: this.state.username
+      }
+    }).then(response => {
+      const data = response.data;
+      if (data.status) {
+        this.setState({
+          commentList: data.list.map((el: ServerComment) => ({
+            operationer: el.operationer,
+            content: el.content
+          }))
+        });
+      }
+    });
+  }
   render() {
     return (
       // <form noValidate autoComplete="off">
       <>
         <FormControl style={{
           display: 'flex',
-          padding: '5px'
+          padding: '5px',
+          boxShadow: '0 0 5px .5px grey',
+          margin: '10px auto'
         }}>
-          <TextField
-            label="用户名"
-            style={{ margin: 8 }}
-            placeholder="输入用户名"
-            value={this.state.username}
-            fullWidth
-            variant="filled"
-            disabled
-            InputLabelProps={{
-              shrink: true,
-            }}
-            onChange={e => this.setState({
-              username: e.target.value
-            })}
-          />
-          <TextField
-            label="简介"
-            style={{ margin: 8 }}
-            placeholder="输入简介"
-            value={this.state.detail}
-            fullWidth
-            variant="filled"
-            InputLabelProps={{
-              shrink: true,
-            }}
-            onChange={e => this.setState({
-              detail: e.target.value
-            })}
-          />
+          <h4 style={{ textAlign: 'center' }}>修改个人资料</h4>
+          <Tooltip title="用户名字一旦创建便无法更改">
+            <TextField
+              label="用户名"
+              style={{ margin: 8 }}
+              placeholder="输入用户名"
+              value={this.state.username}
+              fullWidth
+              variant="filled"
+              disabled
+              InputLabelProps={{
+                shrink: true,
+              }}
+            />
+          </Tooltip>
+          <Tooltip title="用一段话介绍一下你自己(100字内)">
+            <TextField
+              label="简介"
+              style={{ margin: 8 }}
+              placeholder="输入简介"
+              value={this.state.detail}
+              fullWidth
+              variant="filled"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={e => this.setState({
+                detail: e.target.value
+              })}
+            />
+          </Tooltip>
 
           <FormLabel>性别</FormLabel>
           <RadioGroup
@@ -133,14 +165,6 @@ export default class Login extends React.Component {
             <FormControlLabel value="male" control={<Radio color="primary" />} label="男" />
           </RadioGroup>
 
-          <div>
-            <div>
-              <ArrowDropUpIcon style={{ verticalAlign: 'middle' }}></ArrowDropUpIcon>获得赞数：{this.state.up}
-            </div>
-            <div>
-              <ArrowDropDownIcon style={{ verticalAlign: 'middle' }}></ArrowDropDownIcon>获得踩数：{this.state.down}
-            </div>
-          </div>
           <div style={{
             margin: 'auto',
             textAlign: 'center'
@@ -148,6 +172,24 @@ export default class Login extends React.Component {
             <Button color="primary" variant="contained" onClick={this.updateUserInfo}>保存</Button>
           </div>
         </FormControl>
+
+        <Card>
+          <CardContent>
+            <h4 style={{ textAlign: 'center' }}>当前局势</h4>
+            <div>
+              <ArrowDropUpIcon style={{ verticalAlign: 'middle' }}></ArrowDropUpIcon>获得赞数：{this.state.up}
+            </div>
+            <div>
+              <ArrowDropDownIcon style={{ verticalAlign: 'middle' }}></ArrowDropDownIcon>获得踩数：{this.state.down}
+            </div>
+            <div style={{ color: this.state.up - this.state.down < 0 ? 'red' : 'rgb(64, 83, 175)' }}>
+              <ThreeSixtyIcon style={{ verticalAlign: 'middle' }} />综合得分：{this.state.up - this.state.down}
+            </div>
+            <h4 style={{ textAlign: 'center' }}>对我的评论</h4>
+            {this.state.commentList.length === 0 && <div>暂无评论</div>}
+            {this.state.commentList.map((el: Comment) => <div>{el.operationer}说：{el.content}</div>)}
+          </CardContent>
+        </Card>
         <Modal open={this.state.isModal} onClose={() => this.setState({ isModal: false })}>
           <div className="common-modal absolute-vertical-horizontal-center">{this.state.modalMessage}</div>
         </Modal>

@@ -24,7 +24,7 @@ export default class Bandou extends React.Component<Props> {
         <Header></Header>
         <Suspense fallback={<div>Loading...</div>}>
           <Switch>
-            <div style={{ position: 'absolute', top: '104px', bottom: '64px', left: 0, right: 0 }}>
+            <div style={{ position: 'absolute', top: '104px', bottom: '64px', left: 0, right: 0, overflow: 'auto' }}>
               <Route exact path="/bandou/home/" component={Home} />
               <Route exact path="/bandou/home/user" component={User} />
               <Route exact path="/bandou/home/user/:username" component={Detail} />

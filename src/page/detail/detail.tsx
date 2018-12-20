@@ -9,6 +9,8 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import request from '../../util/request';
 import PropTypes from 'prop-types';
+import Modal from '@material-ui/core/Modal';
+import './detail.css';
 
 interface User {
   username: string;
@@ -23,6 +25,8 @@ interface State {
   commentList: Comment[];
   comment: Comment;
   username: string;
+  isModal: boolean;
+  modalMessage: string;
 }
 interface Props {
   match: {
@@ -31,12 +35,12 @@ interface Props {
     }
   }
 }
-interface Comment {
+export interface Comment {
   operationer: string;
   content: string;
 }
 
-interface ServerComment {
+export interface ServerComment {
   operationer: string;
   be_operationer: string;
   content: string;
@@ -61,7 +65,9 @@ export default class Detail extends React.Component<Props, State> {
     comment: {
       operationer: localStorage.getItem('username') || '',
       content: ''
-    }
+    },
+    isModal: false,
+    modalMessage: ''
   }
   componentWillMount() {
     if (!this.state.username) {
@@ -109,6 +115,7 @@ export default class Detail extends React.Component<Props, State> {
     });
   }
 
+  // 发表评论
   addCommentClickHandler = () => {
     if (this.state.comment.content) {
       request({
@@ -128,6 +135,11 @@ export default class Detail extends React.Component<Props, State> {
             return preState;
           });
         }
+      });
+    } else {
+      this.setState({
+        isModal: true,
+        modalMessage: '请输入评论内容'
       });
     }
   }
@@ -163,8 +175,11 @@ export default class Detail extends React.Component<Props, State> {
               {user.isMale ? 'M' : 'F'}
             </Avatar>
           </div>
-          <div>
-            <div>{user.username}</div>
+          <div className="user-detail-info">
+            <div style={{
+              fontSize: '22px',
+              fontWeight: 500
+            }}>{user.username}</div>
             <div style={{
               color: 'gray',
               fontSize: '14px',
@@ -217,6 +232,9 @@ export default class Detail extends React.Component<Props, State> {
             <Button color="primary" variant="contained" onClick={this.addCommentClickHandler}>发表评论</Button>
           </CardActions>
         </Card>
+        <Modal open={this.state.isModal} onClose={() => this.setState({ isModal: false })}>
+          <div className="common-modal absolute-vertical-horizontal-center">{this.state.modalMessage}</div>
+        </Modal>
       </div>
     );
   }

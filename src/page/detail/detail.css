@@ -1,0 +1,8 @@
+.user-detail-info {
+  padding: 10px 0;
+  display: flex;
+  flex-wrap: wrap;
+}
+.user-detail-info > * {
+  width: 100%;
+}

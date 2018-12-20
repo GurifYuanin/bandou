@@ -49,27 +49,36 @@ export default class Login extends React.Component {
       passwordAgain: e.target.value
     });
   }
+
+  // 登录按钮
   onLoginClick = () => {
     if (this.state.isLogin) {
-      request({
-        url: 'User/login',
-        method: 'post',
-        data: {
-          username: this.state.username,
-          password: Md5.hashStr(this.state.password)
-        }
-      }).then(response => {
-        const data = response.data;
-        if (data.status) {
-          localStorage.setItem('username', this.state.username);
-          this.context.router.history.replace('/bandou/home');
-        } else {
-          this.setState({
-            modalMessage: data.message,
-            isModal: true
-          });
-        }
-      });
+      if (this.state.username && this.state.password) {
+        request({
+          url: 'User/login',
+          method: 'post',
+          data: {
+            username: this.state.username,
+            password: Md5.hashStr(this.state.password)
+          }
+        }).then(response => {
+          const data = response.data;
+          if (data.status) {
+            localStorage.setItem('username', this.state.username);
+            this.context.router.history.replace('/bandou/home');
+          } else {
+            this.setState({
+              modalMessage: data.message,
+              isModal: true
+            });
+          }
+        });
+      } else {
+        this.setState({
+          isModal: true,
+          modalMessage: '请输入用户名和密码'
+        });
+      }
     } else {
       this.setState({
         isLogin: true
@@ -88,27 +97,33 @@ export default class Login extends React.Component {
           modalMessage: '密码不一致'
         });
         return;
-      }
-      request({
-        url: 'User/register',
-        method: 'post',
-        data: {
-          username: this.state.username,
-          password: Md5.hashStr(this.state.password)
-        }
-      }).then(response => {
-        const data = response.data;
-        localStorage.setItem('username', this.state.username);
-        this.setState({
-          modalMessage: data.message,
-          isModal: true
+      } else if (this.state.username && this.state.password && this.state.passwordAgain) {
+        request({
+          url: 'User/register',
+          method: 'post',
+          data: {
+            username: this.state.username,
+            password: Md5.hashStr(this.state.password)
+          }
+        }).then(response => {
+          const data = response.data;
+          localStorage.setItem('username', this.state.username);
+          this.setState({
+            modalMessage: data.message,
+            isModal: true
+          });
+          if (data.status) {
+            setTimeout(() => {
+              this.context.router.history.replace('/bandou/home');
+            }, 2000);
+          }
         });
-        if (data.status) {
-          setTimeout(() => {
-            this.context.router.history.replace('/bandou/home');
-          }, 2000);
-        }
-      })
+      } else {
+        this.setState({
+          isModal: true,
+          modalMessage: '请输入用户和密码'
+        });
+      }
     }
   }
   render() {
